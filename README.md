@@ -1,5 +1,4 @@
 # Ready-to-use-Edge-Detection-using-BDCN
-The source code from https://github.com/pkuCactus/BDCN has been modified to make it available as a python function for performing inference using BDCN Model
-
+This repository provides an inference script for the Bi-Directional Cascade Network (BDCN) for perceptual edge detection, designed to simplify the inference process.
 
 Source Code Credits : https://github.com/pkuCactus/BDCN
