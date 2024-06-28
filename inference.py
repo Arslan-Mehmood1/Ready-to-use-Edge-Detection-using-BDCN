@@ -1,22 +1,19 @@
-import numpy as np
-import torch
-import torch.optim as optim
-import torch.nn as nn
-from torch.autograd import Variable
-from torch.nn import functional as F
-import time
+import os.path as osp
 import re
 import os
 import sys
 import cv2
-from .bdcn import BDCN
-#from datasets.dataset import Data
+import time
+import torch
 import argparse
-#import cfg
-from matplotlib import pyplot as plt
-import os
-import os.path as osp
+import numpy as np
+import torch.nn as nn
+from .bdcn import BDCN
+import torch.optim as optim
 from scipy.io import savemat
+from torch.autograd import Variable
+from torch.nn import functional as F
+from matplotlib import pyplot as plt
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -81,8 +78,22 @@ def detect_edges(model, test_image_path, output_dir=f'{EDGE_MODEL_OUTPUT_DIR}/')
     print(all_t)
     print('Total Edge Detection Inference Time: ', time.time() - start_time)
 
-    # Post Processing
+    # Edge color conversion
     output_with_black_edges = convert_to_black_edges(output_edge_image_path)
     
     return output_with_white_edges, output_with_black_edges
-    
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Edge Detection using BDCN model')
+    parser.add_argument('--checkpoint', type=str, default='checkpoint/bdcn_pretrained_on_bsds500.pth', help='Path to the model checkpoint')
+    parser.add_argument('--image', type=str, required=True, help='Path to the input image')
+    parser.add_argument('--output', type=str, default='bdcn_output/', help='Directory to save the output images')
+
+    args = parser.parse_args()
+
+    model = init_edge_detection_model(checkpoint_path=args.checkpoint)
+    output_image_path_with_white_edges, output_image_path_with_black_edges = detect_edges(model, args.image, args.output)
+
+    print(f'Edge detection complete.\nWhite edges output saved to: {output_with_white_edges}\nBlack edges output saved to: {output_with_black_edges}')
+
